@@ -27,8 +27,9 @@ const pessoaSchema = z.object({
   numeroDocumento: z.string().min(1, "Número do documento obrigatório").max(50, "Número do documento muito longo"),
 });
 
-const titularSchema = pessoaSchema.extend({
-  // Campos específicos do titular podem ser adicionados aqui se necessário
+const titularSchema = z.object({
+  tipoDocumento: z.number().min(0).max(3, "Tipo de documento inválido"),
+  numeroDocumento: z.string().min(1, "Número do documento obrigatório").max(50, "Número do documento muito longo"),
 });
 
 const dependenteSchema = pessoaSchema;
@@ -59,9 +60,6 @@ export const FormularioCadastro = ({
     resolver: zodResolver(formularioSchema),
     defaultValues: {
       titular: {
-        nome: "",
-        telefone: "",
-        email: "",
         tipoDocumento: 0, // CPF por padrão
         numeroDocumento: "",
       },
@@ -102,9 +100,6 @@ export const FormularioCadastro = ({
       // Preparar dados para envio
       const dadosParaEnvio = {
         titular: {
-          nome: data.titular.nome,
-          telefone: data.titular.telefone,
-          email: data.titular.email,
           tipoDocumento: data.titular.tipoDocumento,
           numeroDocumento: data.titular.numeroDocumento,
         },
@@ -197,7 +192,7 @@ export const FormularioCadastro = ({
             )}
           </p>
           <p className="text-white/70">
-            Preencha os dados do titular e {quantidadeDependentes} dependente(s)
+            Preencha o documento do titular e {quantidadeDependentes} dependente(s)
           </p>
         </div>
 
@@ -212,56 +207,6 @@ export const FormularioCadastro = ({
             </CardHeader>
             <CardContent className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="titular.nome">Nome Completo *</Label>
-                  <Input
-                    id="titular.nome"
-                    {...form.register("titular.nome")}
-                    placeholder="Digite o nome completo"
-                    className="transition-smooth focus:shadow-soft"
-                  />
-                  {form.formState.errors.titular?.nome && (
-                    <span className="text-destructive text-sm">
-                      {form.formState.errors.titular.nome.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="titular.telefone">Telefone *</Label>
-                  <Input
-                    id="titular.telefone"
-                    {...form.register("titular.telefone")}
-                    placeholder="11999999999"
-                    onChange={(e) => {
-                      const formatted = formatTelefone(e.target.value);
-                      form.setValue("titular.telefone", formatted);
-                    }}
-                    className="transition-smooth focus:shadow-soft"
-                  />
-                  {form.formState.errors.titular?.telefone && (
-                    <span className="text-destructive text-sm">
-                      {form.formState.errors.titular.telefone.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="titular.email">Email *</Label>
-                  <Input
-                    id="titular.email"
-                    type="email"
-                    {...form.register("titular.email")}
-                    placeholder="email@exemplo.com"
-                    className="transition-smooth focus:shadow-soft"
-                  />
-                  {form.formState.errors.titular?.email && (
-                    <span className="text-destructive text-sm">
-                      {form.formState.errors.titular.email.message}
-                    </span>
-                  )}
-                </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="titular.tipoDocumento">Tipo de Documento *</Label>
                   <Select 
