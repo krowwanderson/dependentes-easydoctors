@@ -21,25 +21,29 @@ const Index = () => {
   const [urlParams, setUrlParams] = useState<{
     dependentes: number;
     plano?: string;
+    customerStripe?: string;
   }>({ dependentes: 0 });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const planoId = params.get('plano');
     const dependentesCount = parseInt(params.get('dependentes') || '0');
+    const customerStripe = params.get('Custumer_stripe') || undefined;
     
     // Se foi especificado um ID de plano válido
     if (planoId && planos[planoId as keyof typeof planos]) {
       const plano = planos[planoId as keyof typeof planos];
       setUrlParams({
         dependentes: plano.dependentes,
-        plano: plano.nome
+        plano: plano.nome,
+        customerStripe
       });
     } else {
       // Usa os parâmetros da URL diretamente (compatibilidade com sistema atual)
       setUrlParams({
         dependentes: dependentesCount,
-        plano: planoId || undefined
+        plano: planoId || undefined,
+        customerStripe
       });
     }
   }, []);
@@ -53,6 +57,7 @@ const Index = () => {
     <FormularioCadastro 
       quantidadeDependentes={urlParams.dependentes}
       planoNome={urlParams.plano}
+      customerStripe={urlParams.customerStripe}
       onSubmit={handleFormSubmit}
     />
   );

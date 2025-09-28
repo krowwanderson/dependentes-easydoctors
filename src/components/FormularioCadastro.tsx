@@ -45,12 +45,14 @@ type FormularioData = z.infer<typeof formularioSchema>;
 interface FormularioCadastroProps {
   quantidadeDependentes?: number;
   planoNome?: string;
+  customerStripe?: string;
   onSubmit?: (data: FormularioData) => void;
 }
 
 export const FormularioCadastro = ({
   quantidadeDependentes = 0,
   planoNome,
+  customerStripe,
   onSubmit
 }: FormularioCadastroProps) => {
   const { toast } = useToast();
@@ -96,6 +98,7 @@ export const FormularioCadastro = ({
     setIsSubmitting(true);
     try {
       console.log("Dados do formulário:", data);
+      console.log("Customer Stripe:", customerStripe);
       
       // Preparar dados para envio
       const dadosParaEnvio = {
@@ -111,7 +114,8 @@ export const FormularioCadastro = ({
           numeroDocumento: dep.numeroDocumento,
         })),
         plano: data.plano,
-        quantidadeDependentes: quantidadeDependentes
+        quantidadeDependentes: quantidadeDependentes,
+        customerStripe: customerStripe
       };
 
       // Enviar para a API
@@ -188,6 +192,12 @@ export const FormularioCadastro = ({
               <span className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-2 shadow-soft">
                 <UserCheck className="w-4 h-4" />
                 Plano: {planoNome}
+              </span>
+            )}
+            {customerStripe && (
+              <span className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium mb-2 shadow-soft ml-2">
+                <Shield className="w-4 h-4" />
+                Cliente: {customerStripe}
               </span>
             )}
           </p>
