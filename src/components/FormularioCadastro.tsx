@@ -59,7 +59,26 @@ export const FormularioCadastro = ({
         email: "",
         endereco: "",
       },
-      dependentes: Array.from({ length: quantidadeDependentes }, () => ({
+      dependentes: [],
+      plano: planoNome || "",
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "dependentes",
+  });
+
+  // Atualizar dependentes quando a quantidade mudar
+  useEffect(() => {
+    // Limpar dependentes existentes
+    fields.forEach((_, index) => {
+      remove(index);
+    });
+
+    // Adicionar novos dependentes baseado na quantidade
+    for (let i = 0; i < quantidadeDependentes; i++) {
+      append({
         nome: "",
         cpf: "",
         rg: "",
@@ -68,15 +87,9 @@ export const FormularioCadastro = ({
         email: "",
         endereco: "",
         parentesco: "",
-      })),
-      plano: planoNome || "",
-    },
-  });
-
-  const { fields } = useFieldArray({
-    control: form.control,
-    name: "dependentes",
-  });
+      });
+    }
+  }, [quantidadeDependentes, append, remove, fields.length]);
 
   const handleSubmit = async (data: FormularioData) => {
     setIsSubmitting(true);
