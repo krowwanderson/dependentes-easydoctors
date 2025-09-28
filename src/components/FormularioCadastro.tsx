@@ -10,23 +10,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Users, UserCheck, Send, Shield } from "lucide-react";
 
+// Tipos de documento
+const tiposDocumento = [
+  { value: 0, label: "CPF" },
+  { value: 1, label: "SSN" },
+  { value: 2, label: "ITIN" },
+  { value: 3, label: "PASSAPORTE" }
+];
+
 // Schema de validação
 const pessoaSchema = z.object({
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100, "Nome muito longo"),
-  cpf: z.string().regex(/^\d{11}$/, "CPF deve ter 11 dígitos"),
-  rg: z.string().min(5, "RG inválido").max(20, "RG muito longo"),
-  dataNascimento: z.string().min(1, "Data de nascimento obrigatória"),
   telefone: z.string().regex(/^\d{10,11}$/, "Telefone deve ter 10 ou 11 dígitos"),
   email: z.string().email("Email inválido").max(255, "Email muito longo"),
-  endereco: z.string().min(5, "Endereço muito curto").max(200, "Endereço muito longo"),
+  tipoDocumento: z.number().min(0).max(3, "Tipo de documento inválido"),
+  numeroDocumento: z.string().min(1, "Número do documento obrigatório").max(50, "Número do documento muito longo"),
 });
 
-const dependenteSchema = pessoaSchema.extend({
-  parentesco: z.string().min(1, "Parentesco obrigatório"),
+const titularSchema = pessoaSchema.extend({
+  // Campos específicos do titular podem ser adicionados aqui se necessário
 });
+
+const dependenteSchema = pessoaSchema;
 
 const formularioSchema = z.object({
-  titular: pessoaSchema,
+  titular: titularSchema,
   dependentes: z.array(dependenteSchema),
   plano: z.string().optional(),
 });
@@ -52,12 +60,10 @@ export const FormularioCadastro = ({
     defaultValues: {
       titular: {
         nome: "",
-        cpf: "",
-        rg: "",
-        dataNascimento: "",
         telefone: "",
         email: "",
-        endereco: "",
+        tipoDocumento: 0, // CPF por padrão
+        numeroDocumento: "",
       },
       dependentes: [],
       plano: planoNome || "",
@@ -80,13 +86,10 @@ export const FormularioCadastro = ({
     for (let i = 0; i < quantidadeDependentes; i++) {
       append({
         nome: "",
-        cpf: "",
-        rg: "",
-        dataNascimento: "",
         telefone: "",
         email: "",
-        endereco: "",
-        parentesco: "",
+        tipoDocumento: 0, // CPF por padrão
+        numeroDocumento: "",
       });
     }
   }, [quantidadeDependentes, append, remove, fields.length]);
@@ -96,8 +99,41 @@ export const FormularioCadastro = ({
     try {
       console.log("Dados do formulário:", data);
       
-      // Simular processamento
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Preparar dados para envio
+      const dadosParaEnvio = {
+        titular: {
+          nome: data.titular.nome,
+          telefone: data.titular.telefone,
+          email: data.titular.email,
+          tipoDocumento: data.titular.tipoDocumento,
+          numeroDocumento: data.titular.numeroDocumento,
+        },
+        dependentes: data.dependentes.map(dep => ({
+          nome: dep.nome,
+          telefone: dep.telefone,
+          email: dep.email,
+          tipoDocumento: dep.tipoDocumento,
+          numeroDocumento: dep.numeroDocumento,
+        })),
+        plano: data.plano,
+        quantidadeDependentes: quantidadeDependentes
+      };
+
+      // Enviar para a API
+      const response = await fetch('https://primary-teste-2d67.up.railway.app/webhook-test/finalizar-cadastros', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dadosParaEnvio)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro na API: ${response.status}`);
+      }
+
+      const resultado = await response.json();
+      console.log('Resposta da API:', resultado);
       
       toast({
         title: "Cadastro realizado com sucesso!",
@@ -106,6 +142,7 @@ export const FormularioCadastro = ({
       
       onSubmit?.(data);
     } catch (error) {
+      console.error('Erro ao enviar dados:', error);
       toast({
         title: "Erro no cadastro",
         description: "Tente novamente em alguns instantes.",
@@ -116,12 +153,27 @@ export const FormularioCadastro = ({
     }
   };
 
-  const formatCPF = (value: string) => {
+  const formatTelefone = (value: string) => {
     return value.replace(/\D/g, '').slice(0, 11);
   };
 
-  const formatTelefone = (value: string) => {
-    return value.replace(/\D/g, '').slice(0, 11);
+  const formatDocumento = (value: string, tipoDocumento: number) => {
+    // Remove caracteres não numéricos
+    const cleaned = value.replace(/\D/g, '');
+    
+    // Aplica formatação baseada no tipo
+    switch (tipoDocumento) {
+      case 0: // CPF
+        return cleaned.slice(0, 11);
+      case 1: // SSN
+        return cleaned.slice(0, 9);
+      case 2: // ITIN
+        return cleaned.slice(0, 9);
+      case 3: // PASSAPORTE
+        return value.slice(0, 20); // Passaporte pode ter letras e números
+      default:
+        return cleaned.slice(0, 20);
+    }
   };
 
   return (
@@ -176,55 +228,6 @@ export const FormularioCadastro = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="titular.cpf">CPF *</Label>
-                  <Input
-                    id="titular.cpf"
-                    {...form.register("titular.cpf")}
-                    placeholder="00000000000"
-                    onChange={(e) => {
-                      const formatted = formatCPF(e.target.value);
-                      form.setValue("titular.cpf", formatted);
-                    }}
-                    className="transition-smooth focus:shadow-soft"
-                  />
-                  {form.formState.errors.titular?.cpf && (
-                    <span className="text-destructive text-sm">
-                      {form.formState.errors.titular.cpf.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="titular.rg">RG *</Label>
-                  <Input
-                    id="titular.rg"
-                    {...form.register("titular.rg")}
-                    placeholder="Digite o RG"
-                    className="transition-smooth focus:shadow-soft"
-                  />
-                  {form.formState.errors.titular?.rg && (
-                    <span className="text-destructive text-sm">
-                      {form.formState.errors.titular.rg.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="titular.dataNascimento">Data de Nascimento *</Label>
-                  <Input
-                    id="titular.dataNascimento"
-                    type="date"
-                    {...form.register("titular.dataNascimento")}
-                    className="transition-smooth focus:shadow-soft"
-                  />
-                  {form.formState.errors.titular?.dataNascimento && (
-                    <span className="text-destructive text-sm">
-                      {form.formState.errors.titular.dataNascimento.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="titular.telefone">Telefone *</Label>
                   <Input
                     id="titular.telefone"
@@ -258,21 +261,50 @@ export const FormularioCadastro = ({
                     </span>
                   )}
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="titular.endereco">Endereço Completo *</Label>
-                <Input
-                  id="titular.endereco"
-                  {...form.register("titular.endereco")}
-                  placeholder="Rua, número, bairro, cidade, CEP"
-                  className="transition-smooth focus:shadow-soft"
-                />
-                {form.formState.errors.titular?.endereco && (
-                  <span className="text-destructive text-sm">
-                    {form.formState.errors.titular.endereco.message}
-                  </span>
-                )}
+                <div className="space-y-2">
+                  <Label htmlFor="titular.tipoDocumento">Tipo de Documento *</Label>
+                  <Select 
+                    onValueChange={(value) => form.setValue("titular.tipoDocumento", parseInt(value))}
+                    defaultValue="0"
+                  >
+                    <SelectTrigger className="transition-smooth focus:shadow-soft">
+                      <SelectValue placeholder="Selecione o tipo de documento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tiposDocumento.map((tipo) => (
+                        <SelectItem key={tipo.value} value={tipo.value.toString()}>
+                          {tipo.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.formState.errors.titular?.tipoDocumento && (
+                    <span className="text-destructive text-sm">
+                      {form.formState.errors.titular.tipoDocumento.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="titular.numeroDocumento">Número do Documento *</Label>
+                  <Input
+                    id="titular.numeroDocumento"
+                    {...form.register("titular.numeroDocumento")}
+                    placeholder="Digite o número do documento"
+                    onChange={(e) => {
+                      const tipoDocumento = form.getValues("titular.tipoDocumento");
+                      const formatted = formatDocumento(e.target.value, tipoDocumento);
+                      form.setValue("titular.numeroDocumento", formatted);
+                    }}
+                    className="transition-smooth focus:shadow-soft"
+                  />
+                  {form.formState.errors.titular?.numeroDocumento && (
+                    <span className="text-destructive text-sm">
+                      {form.formState.errors.titular.numeroDocumento.message}
+                    </span>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -299,77 +331,6 @@ export const FormularioCadastro = ({
                     {form.formState.errors.dependentes?.[index]?.nome && (
                       <span className="text-destructive text-sm">
                         {form.formState.errors.dependentes[index]?.nome?.message}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor={`dependentes.${index}.parentesco`}>Parentesco *</Label>
-                    <Select onValueChange={(value) => form.setValue(`dependentes.${index}.parentesco`, value)}>
-                      <SelectTrigger className="transition-smooth focus:shadow-soft">
-                        <SelectValue placeholder="Selecione o parentesco" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="cônjuge">Cônjuge</SelectItem>
-                        <SelectItem value="filho(a)">Filho(a)</SelectItem>
-                        <SelectItem value="pai">Pai</SelectItem>
-                        <SelectItem value="mãe">Mãe</SelectItem>
-                        <SelectItem value="irmão(ã)">Irmão(ã)</SelectItem>
-                        <SelectItem value="outro">Outro</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {form.formState.errors.dependentes?.[index]?.parentesco && (
-                      <span className="text-destructive text-sm">
-                        {form.formState.errors.dependentes[index]?.parentesco?.message}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor={`dependentes.${index}.cpf`}>CPF *</Label>
-                    <Input
-                      id={`dependentes.${index}.cpf`}
-                      {...form.register(`dependentes.${index}.cpf`)}
-                      placeholder="00000000000"
-                      onChange={(e) => {
-                        const formatted = formatCPF(e.target.value);
-                        form.setValue(`dependentes.${index}.cpf`, formatted);
-                      }}
-                      className="transition-smooth focus:shadow-soft"
-                    />
-                    {form.formState.errors.dependentes?.[index]?.cpf && (
-                      <span className="text-destructive text-sm">
-                        {form.formState.errors.dependentes[index]?.cpf?.message}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor={`dependentes.${index}.rg`}>RG *</Label>
-                    <Input
-                      id={`dependentes.${index}.rg`}
-                      {...form.register(`dependentes.${index}.rg`)}
-                      placeholder="Digite o RG"
-                      className="transition-smooth focus:shadow-soft"
-                    />
-                    {form.formState.errors.dependentes?.[index]?.rg && (
-                      <span className="text-destructive text-sm">
-                        {form.formState.errors.dependentes[index]?.rg?.message}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor={`dependentes.${index}.dataNascimento`}>Data de Nascimento *</Label>
-                    <Input
-                      id={`dependentes.${index}.dataNascimento`}
-                      type="date"
-                      {...form.register(`dependentes.${index}.dataNascimento`)}
-                      className="transition-smooth focus:shadow-soft"
-                    />
-                    {form.formState.errors.dependentes?.[index]?.dataNascimento && (
-                      <span className="text-destructive text-sm">
-                        {form.formState.errors.dependentes[index]?.dataNascimento?.message}
                       </span>
                     )}
                   </div>
@@ -408,21 +369,50 @@ export const FormularioCadastro = ({
                       </span>
                     )}
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor={`dependentes.${index}.endereco`}>Endereço Completo *</Label>
-                  <Input
-                    id={`dependentes.${index}.endereco`}
-                    {...form.register(`dependentes.${index}.endereco`)}
-                    placeholder="Rua, número, bairro, cidade, CEP"
-                    className="transition-smooth focus:shadow-soft"
-                  />
-                  {form.formState.errors.dependentes?.[index]?.endereco && (
-                    <span className="text-destructive text-sm">
-                      {form.formState.errors.dependentes[index]?.endereco?.message}
-                    </span>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor={`dependentes.${index}.tipoDocumento`}>Tipo de Documento *</Label>
+                    <Select 
+                      onValueChange={(value) => form.setValue(`dependentes.${index}.tipoDocumento`, parseInt(value))}
+                      defaultValue="0"
+                    >
+                      <SelectTrigger className="transition-smooth focus:shadow-soft">
+                        <SelectValue placeholder="Selecione o tipo de documento" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {tiposDocumento.map((tipo) => (
+                          <SelectItem key={tipo.value} value={tipo.value.toString()}>
+                            {tipo.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {form.formState.errors.dependentes?.[index]?.tipoDocumento && (
+                      <span className="text-destructive text-sm">
+                        {form.formState.errors.dependentes[index]?.tipoDocumento?.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`dependentes.${index}.numeroDocumento`}>Número do Documento *</Label>
+                    <Input
+                      id={`dependentes.${index}.numeroDocumento`}
+                      {...form.register(`dependentes.${index}.numeroDocumento`)}
+                      placeholder="Digite o número do documento"
+                      onChange={(e) => {
+                        const tipoDocumento = form.getValues(`dependentes.${index}.tipoDocumento`);
+                        const formatted = formatDocumento(e.target.value, tipoDocumento);
+                        form.setValue(`dependentes.${index}.numeroDocumento`, formatted);
+                      }}
+                      className="transition-smooth focus:shadow-soft"
+                    />
+                    {form.formState.errors.dependentes?.[index]?.numeroDocumento && (
+                      <span className="text-destructive text-sm">
+                        {form.formState.errors.dependentes[index]?.numeroDocumento?.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
