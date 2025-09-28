@@ -24,12 +24,19 @@ const paises = [
   { value: "US", label: "Estados Unidos", codigo: "+1", bandeira: "🇺🇸" }
 ];
 
+// Opções de gênero
+const generos = [
+  { value: "male", label: "Masculino" },
+  { value: "female", label: "Feminino" }
+];
+
 // Schema de validação
 const pessoaSchema = z.object({
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100, "Nome muito longo"),
   telefone: z.string().regex(/^\d{10,11}$/, "Telefone deve ter 10 ou 11 dígitos"),
   codigoPais: z.string().min(1, "Código do país obrigatório"),
   email: z.string().email("Email inválido").max(255, "Email muito longo"),
+  genero: z.string().min(1, "Gênero obrigatório"),
   tipoDocumento: z.number().min(0).max(3, "Tipo de documento inválido"),
   numeroDocumento: z.string().min(1, "Número do documento obrigatório").max(50, "Número do documento muito longo"),
 });
@@ -96,6 +103,7 @@ export const FormularioCadastro = ({
         telefone: "",
         codigoPais: "BR", // Brasil por padrão
         email: "",
+        genero: "male", // Masculino por padrão
         tipoDocumento: 0, // CPF por padrão
         numeroDocumento: "",
       });
@@ -119,6 +127,7 @@ export const FormularioCadastro = ({
           telefone: dep.telefone,
           codigoPais: getCodigoPais(dep.codigoPais),
           email: dep.email,
+          genero: dep.genero,
           tipoDocumento: dep.tipoDocumento,
           numeroDocumento: dep.numeroDocumento,
         })),
@@ -363,6 +372,30 @@ export const FormularioCadastro = ({
                     {form.formState.errors.dependentes?.[index]?.email && (
                       <span className="text-destructive text-sm">
                         {form.formState.errors.dependentes[index]?.email?.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`dependentes.${index}.genero`}>Gênero *</Label>
+                    <Select 
+                      onValueChange={(value) => form.setValue(`dependentes.${index}.genero`, value)}
+                      defaultValue="male"
+                    >
+                      <SelectTrigger className="transition-smooth focus:shadow-soft">
+                        <SelectValue placeholder="Selecione o gênero" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {generos.map((genero) => (
+                          <SelectItem key={genero.value} value={genero.value}>
+                            {genero.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {form.formState.errors.dependentes?.[index]?.genero && (
+                      <span className="text-destructive text-sm">
+                        {form.formState.errors.dependentes[index]?.genero?.message}
                       </span>
                     )}
                   </div>
