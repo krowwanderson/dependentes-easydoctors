@@ -78,9 +78,9 @@ export const FormularioCadastro = ({
   // Atualizar dependentes quando a quantidade mudar
   useEffect(() => {
     // Limpar dependentes existentes
-    fields.forEach((_, index) => {
-      remove(index);
-    });
+    while (fields.length > 0) {
+      remove(0);
+    }
 
     // Adicionar novos dependentes baseado na quantidade
     for (let i = 0; i < quantidadeDependentes; i++) {
@@ -92,7 +92,7 @@ export const FormularioCadastro = ({
         numeroDocumento: "",
       });
     }
-  }, [quantidadeDependentes, append, remove, fields.length]);
+  }, [quantidadeDependentes, append, remove]);
 
   const handleSubmit = async (data: FormularioData) => {
     setIsSubmitting(true);
