@@ -18,10 +18,17 @@ const tiposDocumento = [
   { value: 3, label: "PASSAPORTE" }
 ];
 
+// Países disponíveis
+const paises = [
+  { value: "BR", label: "Brasil", codigo: "+55", bandeira: "🇧🇷" },
+  { value: "US", label: "Estados Unidos", codigo: "+1", bandeira: "🇺🇸" }
+];
+
 // Schema de validação
 const pessoaSchema = z.object({
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100, "Nome muito longo"),
   telefone: z.string().regex(/^\d{10,11}$/, "Telefone deve ter 10 ou 11 dígitos"),
+  codigoPais: z.string().min(1, "Código do país obrigatório"),
   email: z.string().email("Email inválido").max(255, "Email muito longo"),
   tipoDocumento: z.number().min(0).max(3, "Tipo de documento inválido"),
   numeroDocumento: z.string().min(1, "Número do documento obrigatório").max(50, "Número do documento muito longo"),
@@ -87,6 +94,7 @@ export const FormularioCadastro = ({
       append({
         nome: "",
         telefone: "",
+        codigoPais: "BR", // Brasil por padrão
         email: "",
         tipoDocumento: 0, // CPF por padrão
         numeroDocumento: "",
@@ -109,6 +117,7 @@ export const FormularioCadastro = ({
         dependentes: data.dependentes.map(dep => ({
           nome: dep.nome,
           telefone: dep.telefone,
+          codigoPais: getCodigoPais(dep.codigoPais),
           email: dep.email,
           tipoDocumento: dep.tipoDocumento,
           numeroDocumento: dep.numeroDocumento,
@@ -173,6 +182,11 @@ export const FormularioCadastro = ({
       default:
         return cleaned.slice(0, 20);
     }
+  };
+
+  const getCodigoPais = (paisValue: string) => {
+    const pais = paises.find(p => p.value === paisValue);
+    return pais ? pais.codigo : "+55";
   };
 
   return (
@@ -286,6 +300,34 @@ export const FormularioCadastro = ({
                     {form.formState.errors.dependentes?.[index]?.nome && (
                       <span className="text-destructive text-sm">
                         {form.formState.errors.dependentes[index]?.nome?.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`dependentes.${index}.codigoPais`}>País *</Label>
+                    <Select 
+                      onValueChange={(value) => form.setValue(`dependentes.${index}.codigoPais`, value)}
+                      defaultValue="BR"
+                    >
+                      <SelectTrigger className="transition-smooth focus:shadow-soft">
+                        <SelectValue placeholder="Selecione o país" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {paises.map((pais) => (
+                          <SelectItem key={pais.value} value={pais.value}>
+                            <span className="flex items-center gap-2">
+                              <span>{pais.bandeira}</span>
+                              <span>{pais.label}</span>
+                              <span className="text-muted-foreground">({pais.codigo})</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {form.formState.errors.dependentes?.[index]?.codigoPais && (
+                      <span className="text-destructive text-sm">
+                        {form.formState.errors.dependentes[index]?.codigoPais?.message}
                       </span>
                     )}
                   </div>
