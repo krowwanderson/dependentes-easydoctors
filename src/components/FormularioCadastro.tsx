@@ -112,34 +112,34 @@ export const FormularioCadastro = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted to-secondary p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 bg-card px-6 py-3 rounded-full shadow-soft mb-4">
-            <Shield className="w-5 h-5 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">Cadastro Seguro</span>
+          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full shadow-glow mb-4 border border-white/30">
+            <Shield className="w-5 h-5 text-white" />
+            <span className="text-sm font-medium text-white/90">Cadastro Seguro</span>
           </div>
-          <h1 className="text-4xl font-bold text-foreground mb-2">
+          <h1 className="text-4xl font-bold text-white mb-2">
             Cadastro de Beneficiários
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-white/80 text-lg">
             {planoNome && (
-              <span className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-2">
+              <span className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-4 py-2 rounded-full text-sm font-medium mb-2 shadow-soft">
                 <UserCheck className="w-4 h-4" />
                 Plano: {planoNome}
               </span>
             )}
           </p>
-          <p className="text-muted-foreground">
+          <p className="text-white/70">
             Preencha os dados do titular e {quantidadeDependentes} dependente(s)
           </p>
         </div>
 
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           {/* Dados do Titular */}
-          <Card className="shadow-card border-0 bg-gradient-card">
-            <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg">
+          <Card className="shadow-card border-0 bg-card">
+            <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg shadow-glow">
               <CardTitle className="flex items-center gap-2 text-xl">
                 <UserCheck className="w-6 h-6" />
                 Dados do Titular
@@ -266,8 +266,8 @@ export const FormularioCadastro = ({
 
           {/* Dependentes */}
           {fields.map((field, index) => (
-            <Card key={field.id} className="shadow-card border-0 bg-gradient-card">
-              <CardHeader className="bg-gradient-to-r from-accent to-primary text-accent-foreground rounded-t-lg">
+            <Card key={field.id} className="shadow-card border-0 bg-card">
+              <CardHeader className="bg-gradient-accent text-accent-foreground rounded-t-lg shadow-glow">
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Users className="w-6 h-6" />
                   Dependente {index + 1}
@@ -421,7 +421,7 @@ export const FormularioCadastro = ({
               type="submit"
               size="lg"
               disabled={isSubmitting}
-              className="bg-gradient-primary hover:opacity-90 transition-smooth px-8 py-6 text-lg font-semibold shadow-card"
+              className="bg-gradient-accent hover:opacity-90 transition-smooth px-8 py-6 text-lg font-semibold shadow-glow hover:shadow-card"
             >
               {isSubmitting ? (
                 <>
