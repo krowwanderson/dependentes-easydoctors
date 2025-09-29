@@ -44,6 +44,7 @@ const pessoaSchema = z.object({
 const titularSchema = z.object({
   tipoDocumento: z.number().min(0).max(3, "Tipo de documento inválido"),
   numeroDocumento: z.string().min(1, "Número do documento obrigatório").max(50, "Número do documento muito longo"),
+  genero: z.string().min(1, "Gênero obrigatório"),
 });
 
 const dependenteSchema = pessoaSchema;
@@ -78,6 +79,7 @@ export const FormularioCadastro = ({
       titular: {
         tipoDocumento: 0, // CPF por padrão
         numeroDocumento: "",
+        genero: "male", // Masculino por padrão
       },
       dependentes: [],
       plano: planoNome || "",
@@ -121,6 +123,7 @@ export const FormularioCadastro = ({
         titular: {
           tipoDocumento: data.titular.tipoDocumento,
           numeroDocumento: data.titular.numeroDocumento,
+          genero: data.titular.genero,
         },
         dependentes: data.dependentes.map(dep => ({
           nome: dep.nome,
@@ -280,6 +283,30 @@ export const FormularioCadastro = ({
                   {form.formState.errors.titular?.numeroDocumento && (
                     <span className="text-destructive text-sm">
                       {form.formState.errors.titular.numeroDocumento.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="titular.genero">Gênero *</Label>
+                  <Select 
+                    onValueChange={(value) => form.setValue("titular.genero", value)}
+                    defaultValue="male"
+                  >
+                    <SelectTrigger className="transition-smooth focus:shadow-soft">
+                      <SelectValue placeholder="Selecione o gênero" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {generos.map((genero) => (
+                        <SelectItem key={genero.value} value={genero.value}>
+                          {genero.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.formState.errors.titular?.genero && (
+                    <span className="text-destructive text-sm">
+                      {form.formState.errors.titular.genero.message}
                     </span>
                   )}
                 </div>
