@@ -235,9 +235,9 @@ export const FormularioCadastro = ({
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           {/* Dados do Titular */}
           <Card className="shadow-card border-0 bg-card">
-            <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg shadow-glow">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <UserCheck className="w-6 h-6" />
+            <CardHeader className="bg-gradient-primary text-white rounded-t-lg shadow-glow">
+              <CardTitle className="flex items-center gap-2 text-xl text-white">
+                <UserCheck className="w-6 h-6 text-white" />
                 Dados do Titular
               </CardTitle>
             </CardHeader>
@@ -317,9 +317,9 @@ export const FormularioCadastro = ({
           {/* Dependentes */}
           {fields.map((field, index) => (
             <Card key={field.id} className="shadow-card border-0 bg-card">
-              <CardHeader className="bg-gradient-accent text-accent-foreground rounded-t-lg shadow-glow">
-                <CardTitle className="flex items-center gap-2 text-xl">
-                  <Users className="w-6 h-6" />
+              <CardHeader className="bg-gradient-accent text-white rounded-t-lg shadow-glow">
+                <CardTitle className="flex items-center gap-2 text-xl text-white">
+                  <Users className="w-6 h-6 text-white" />
                   Dependente {index + 1}
                 </CardTitle>
               </CardHeader>
@@ -481,7 +481,7 @@ export const FormularioCadastro = ({
               type="submit"
               size="lg"
               disabled={isSubmitting}
-              className="bg-gradient-accent hover:opacity-90 transition-smooth px-8 py-6 text-lg font-semibold shadow-glow hover:shadow-card"
+              className="bg-gradient-accent hover:opacity-90 transition-smooth px-8 py-6 text-lg font-semibold shadow-glow hover:shadow-card rounded-[120px]"
             >
               {isSubmitting ? (
                 <>

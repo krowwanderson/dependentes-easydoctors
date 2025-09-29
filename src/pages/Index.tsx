@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { FormularioCadastro } from "@/components/FormularioCadastro";
+import { EasyDoctorsHeader } from "@/components/EasyDoctorsHeader";
+import { FloatingWhatsAppButton } from "@/components/FloatingWhatsAppButton";
 
 // Mapeamento de planos por ID (baseado na sua estrutura)
 const planos = {
@@ -54,12 +56,20 @@ const Index = () => {
   };
 
   return (
-    <FormularioCadastro 
-      quantidadeDependentes={urlParams.dependentes}
-      planoNome={urlParams.plano}
-      customerStripe={urlParams.customerStripe}
-      onSubmit={handleFormSubmit}
-    />
+    <div className="min-h-screen bg-background">
+      <EasyDoctorsHeader />
+      <main>
+        <FormularioCadastro 
+          quantidadeDependentes={urlParams.dependentes}
+          planoNome={urlParams.plano}
+          customerStripe={urlParams.customerStripe}
+          onSubmit={handleFormSubmit}
+        />
+      </main>
+      
+      {/* Botão flutuante WhatsApp */}
+      <FloatingWhatsAppButton />
+    </div>
   );
 };
 

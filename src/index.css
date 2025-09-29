@@ -1,92 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Design System - All colors in HSL format (H S% L%) */
+/* 📱 EasyDoctors - Sistema de Design */
+/* Colors converted to HSL format for CSS custom properties */
 
 @layer base {
   :root {
-    /* Core */
-    --background: 0 0% 100%;
-    --foreground: 264 44% 14%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 264 44% 14%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 264 44% 14%;
-
-    /* Brand */
-    --primary: 280 65% 45%; /* Purple */
+    /* 🎨 Cores Principais - EasyDoctors */
+    --background: 0 0% 100%; /* #ffffff - Branco */
+    --foreground: 210 29% 11%; /* #1a202c - Cinza escuro */
+    
+    --card: 0 0% 100%; /* #ffffff - Branco */
+    --card-foreground: 210 29% 11%; /* #1a202c */
+    
+    --popover: 0 0% 100%; /* #ffffff */
+    --popover-foreground: 210 29% 11%; /* #1a202c */
+    
+    /* Brand Colors */
+    --primary: 294 44% 24%; /* #49175a - Roxo escuro */
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 220 14% 96%; /* Soft gray */
-    --secondary-foreground: 264 44% 14%;
-
-    --muted: 220 14% 96%;
-    --muted-foreground: 240 5% 46%;
-
-    --accent: 150 60% 45%; /* Green */
+    
+    --accent: 154 100% 33%; /* #00a973 - Verde esmeralda */
     --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
+    
+    --secondary: 220 13% 91%; /* #e2e8f0 - Cinza claro para bordas */
+    --secondary-foreground: 210 29% 11%; /* #1a202c */
+    
+    --muted: 220 13% 91%; /* #e2e8f0 */
+    --muted-foreground: 210 12% 46%; /* #718096 - Cinza claro */
+    
+    --destructive: 0 73% 59%; /* #E5484D - Vermelho */
     --destructive-foreground: 0 0% 100%;
-
-    /* UI */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 280 65% 45%;
-
-    --radius: 0.5rem;
-
+    
+    /* UI Colors */
+    --border: 220 13% 91%; /* #e2e8f0 */
+    --input: 220 13% 91%; /* #e2e8f0 */
+    --ring: 294 44% 24%; /* #49175a */
+    
+    --radius: 0.75rem; /* 12px - Border radius padrão */
+    
+    /* Typography */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    
+    /* Status Colors */
+    --success: 154 100% 33%; /* #00a973 - Verde */
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 100% 50%; /* #FFA500 - Laranja */
+    --warning-foreground: 0 0% 100%;
+    
+    --whatsapp: 144 100% 49%; /* #25D366 - Verde WhatsApp */
+    --whatsapp-foreground: 0 0% 100%;
+    
     /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 264 44% 14%;
-    --sidebar-primary: 280 65% 45%;
+    --sidebar-foreground: 210 29% 11%; /* #1a202c */
+    --sidebar-primary: 294 44% 24%; /* #49175a */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 264 44% 14%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 280 65% 45%;
+    --sidebar-accent: 220 13% 91%;
+    --sidebar-accent-foreground: 210 29% 11%; /* #1a202c */
+    --sidebar-border: 220 13% 91%; /* #e2e8f0 */
+    --sidebar-ring: 294 44% 24%; /* #49175a */
   }
-
+  
   .dark {
-    --background: 264 44% 6%;
-    --foreground: 0 0% 98%;
-
-    --card: 264 44% 10%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 264 44% 10%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 283 70% 60%;
+    --background: 210 29% 6%; /* fundo escuro */
+    --foreground: 0 0% 98%; /* texto branco */
+    
+    --card: 210 29% 10%; /* card escuro */
+    --card-foreground: 0 0% 98%; /* texto branco */
+    
+    --popover: 210 29% 10%; /* popover escuro */
+    --popover-foreground: 0 0% 98%; /* texto branco */
+    
+    --primary: 294 44% 60%; /* roxo mais claro no modo escuro */
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 264 30% 16%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 264 30% 16%;
-    --muted-foreground: 240 5% 64%;
-
-    --accent: 150 60% 45%;
+    
+    --accent: 154 100% 50%; /* verde mais claro no modo escuro */
     --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62% 30%;
+    
+    --secondary: 210 20% 16%; /* fundo escuro */
+    --secondary-foreground: 0 0% 98%; /* texto branco */
+    
+    --muted: 210 20% 16%; /* fundo escuro */
+    --muted-foreground: 210 12% 64%; /* texto claro */
+    
+    --destructive: 0 73% 59%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 264 30% 20%;
-    --input: 264 30% 20%;
-    --ring: 283 70% 60%;
-
-    --sidebar-background: 264 44% 10%;
+    
+    --border: 210 16% 20%; /* borda escura */
+    --input: 210 16% 20%; /* input escuro */
+    --ring: 294 44% 60%;
+    
+    --success: 154 100% 50%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 100% 60%;
+    --warning-foreground: 0 0% 100%;
+    
+    --whatsapp: 144 100% 60%;
+    --whatsapp-foreground: 0 0% 100%;
+    
+    --sidebar-background: 210 29% 10%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 283 70% 60%;
+    --sidebar-primary: 294 44% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 264 30% 16%;
+    --sidebar-accent: 210 20% 16%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 264 30% 20%;
-    --sidebar-ring: 283 70% 60%;
+    --sidebar-border: 210 16% 20%;
+    --sidebar-ring: 294 44% 60%;
   }
 }
 
@@ -94,27 +118,244 @@
   * {
     @apply border-border;
   }
-
+  
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-family);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  
+  /* 📐 Sistema de Espaçamento - EasyDoctors */
+  .spacing-1 { padding: 0.25rem; } /* 4px */
+  .spacing-2 { padding: 0.5rem; } /* 8px */
+  .spacing-3 { padding: 0.75rem; } /* 12px */
+  .spacing-4 { padding: 1rem; } /* 16px */
+  .spacing-5 { padding: 1.25rem; } /* 20px */
+  .spacing-6 { padding: 1.5rem; } /* 24px */
+  .spacing-8 { padding: 2rem; } /* 32px */
+  .spacing-10 { padding: 2.5rem; } /* 40px */
+  .spacing-12 { padding: 3rem; } /* 48px */
+  
+  /* 🔤 Hierarquia de Textos - EasyDoctors */
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 40px;
+    color: hsl(var(--foreground));
+  }
+  
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: hsl(var(--foreground));
+  }
+  
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+    color: hsl(var(--foreground));
+  }
+  
+  .text-body {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: hsl(var(--foreground));
+  }
+  
+  .text-caption {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: hsl(var(--muted-foreground));
+  }
+  
+  .text-small {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: hsl(var(--muted-foreground));
   }
 }
 
-/* Custom utility classes built on tokens */
+/* 🎯 Componentes Padrão - EasyDoctors */
+@layer components {
+  /* Cards */
+  .easy-card {
+    @apply bg-card border border-border rounded-[12px] shadow-card;
+    background-color: #ffffff;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: hsl(var(--card-foreground));
+  }
+  
+  .easy-card-lg {
+    @apply bg-card border border-border rounded-[14px] shadow-card;
+    background-color: #ffffff;
+    padding: 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: hsl(var(--card-foreground));
+  }
+  
+  /* Botões */
+  .easy-btn {
+    @apply font-semibold transition-smooth;
+    padding: 10px 24px; /* theme.spacing(2.5) vertical, theme.spacing(3) horizontal */
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .easy-btn-primary {
+    @apply easy-btn;
+    background-color: #49175a;
+    color: white;
+    border-radius: 12px;
+  }
+  
+  .easy-btn-primary:hover {
+    background-color: hsl(294 44% 20%);
+  }
+  
+  .easy-btn-accent {
+    @apply easy-btn;
+    background-color: #00a973;
+    color: white;
+    border-radius: 12px;
+  }
+  
+  .easy-btn-accent:hover {
+    background-color: hsl(154 100% 28%);
+  }
+  
+  /* Botões com border-radius 100% */
+  .easy-btn-accent-rounded {
+    @apply easy-btn;
+    background-color: #00a973;
+    color: white;
+    border-radius: 100px;
+  }
+  
+  .easy-btn-accent-rounded:hover {
+    background-color: hsl(154 100% 28%);
+  }
+  
+  .easy-btn-primary-rounded {
+    @apply easy-btn;
+    background-color: #49175a;
+    color: white;
+    border-radius: 100px;
+  }
+  
+  .easy-btn-primary-rounded:hover {
+    background-color: hsl(294 44% 20%);
+  }
+  
+  .easy-btn-success {
+    @apply easy-btn;
+    background-color: #00a973;
+    color: white;
+    border-radius: 12px;
+  }
+  
+  .easy-btn-danger {
+    @apply easy-btn;
+    background-color: #E5484D;
+    color: white;
+    border-radius: 12px;
+  }
+  
+  .easy-btn-warning {
+    @apply easy-btn;
+    background-color: #FFA500;
+    color: white;
+    border-radius: 12px;
+  }
+  
+  .easy-btn-whatsapp {
+    @apply easy-btn;
+    background-color: #25D366;
+    color: white;
+    border-radius: 12px;
+  }
+  
+  /* Inputs */
+  .easy-input {
+    @apply bg-background border border-border rounded-[12px] px-3 py-3;
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+    font-size: 16px;
+    line-height: 24px;
+    color: hsl(var(--foreground));
+  }
+  
+  .easy-input:focus {
+    outline: none;
+    border-color: #49175a;
+    box-shadow: 0 0 0 3px rgba(73, 23, 90, 0.1);
+  }
+  
+  .easy-textarea {
+    @apply easy-input;
+    resize: vertical;
+    min-height: 100px;
+  }
+}
+
+/* Custom utility classes built on EasyDoctors tokens */
 @layer utilities {
+  .bg-gradient-easy-doctors {
+    background-image: linear-gradient(135deg, #49175a, #00a973);
+  }
+  
   .bg-gradient-primary {
-    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(285 70% 55%));
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(294 44% 20%));
   }
+  
   .bg-gradient-accent {
-    background-image: linear-gradient(135deg, hsl(var(--accent)), hsl(150 70% 55%));
+    background-image: linear-gradient(135deg, hsl(var(--accent)), hsl(154 100% 28%));
   }
-  .bg-gradient-card {
-    background-image: linear-gradient(145deg, hsl(var(--card)), hsl(var(--secondary)));
+  
+  .shadow-card { 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-
-  .shadow-soft { box-shadow: 0 4px 6px -1px hsl(var(--ring) / 0.15); }
-  .shadow-card { box-shadow: 0 10px 25px -3px hsl(var(--ring) / 0.12); }
-  .shadow-glow { box-shadow: 0 0 40px hsl(var(--ring) / 0.30); }
-
-  .transition-smooth { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  
+  .shadow-soft { 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .shadow-glow { 
+    box-shadow: 0 0 20px rgba(73, 23, 90, 0.3); 
+  }
+  
+  .transition-smooth { 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+  }
+  
+  /* EasyDoctors specific color utilities */
+  .text-primary { color: #1a202c; } /* Text */
+  .text-secondary { color: #4a5568; } /* Text Secondary */
+  .text-muted { color: #718096; } /* Text Muted */
+  .bg-primary { background-color: #49175a; } /* Primary */
+  .bg-accent { background-color: #00a973; } /* Accent */
+  .bg-whatsapp { background-color: #25D366; } /* WhatsApp */
+  .bg-success { background-color: #00a973; } /* Success */
+  .bg-danger { background-color: #E5484D; } /* Danger */
+  .bg-warning { background-color: #FFA500; } /* Warning */
+  .border-input { border-color: #e2e8f0; } /* Input border */
+  
+  /* Garantir contraste adequado */
+  .text-on-dark {
+    color: white;
+  }
+  
+  .text-on-light {
+    color: #1a202c;
+  }
 }
